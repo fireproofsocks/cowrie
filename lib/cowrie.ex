@@ -578,7 +578,7 @@ defmodule Cowrie do
 
   @doc """
   Prompts the user for input. Input will be consumed until Enter is pressed.
-  The returned value will include a `\n`.
+  *Careful:* the returned value will include a newline (`\\n`)!
 
   Formatting and transforms options: `:prompt`
   """
@@ -733,8 +733,7 @@ defmodule Cowrie do
   def warning(text, opts \\ []) when is_binary(text), do: transform_print(text, opts, :warning)
 
   @doc """
-  Prompts the user for input. Input will be consumed until Enter is pressed.
-  *Careful:* the returned value will include a newline (`\n`)!
+  Prompts the user to continue with a simple `Yes` or `No`.
   """
   @spec yes?(text :: binary, opts :: keyword) :: binary
   def yes?(text, opts \\ []) when is_binary(text), do: transform_print(text, opts, :yes?, :yes?)
