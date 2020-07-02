@@ -1,17 +1,26 @@
 # Cowrie Overview
 
 `Cowrie` helps you print beautiful and consistent Terminal output to the Shell
-of your Elixir apps using familiar functions inspired by HTML tags. All formatting 
-is configurable, either via your application's configuration file, or as arguments 
-to the various functions. Sensible defaults are provided.
+of your Elixir apps using functions inspired by familiar HTML tags, e.g.
+
+```elixir
+import Cowrie
+
+h1("This is a Heading")
+ol(["This is", "an ordered", "list via ol/2"])
+warning("Uh oh...")
+```
+
+All formatting is configurable, either via your application's configuration file, 
+or as arguments to the various functions. Sensible defaults are provided.
 
 All formatting styles rely on `IO.ANSI` formatting options, so you are free to
 research and apply your own styles to match your personal preference.
 
 ## Usage
 
-Use `Cowrie` functions in our custom `Mix.Task` -- importing them makes them
-easier to use.
+Use `Cowrie` functions in your custom `Mix.Task` -- importing `Cowrie` makes its 
+functions easier to use.
 
 ```
 defmodule Mix.Tasks.MyApp.Example do
@@ -25,6 +34,7 @@ defmodule Mix.Tasks.MyApp.Example do
     h1("My Custom Task")
     warning("The following issues were found:")
     ul(["Lions", "Tigers", "Bears"])
+    spinner(fn -> MyApp.long_task() end)
   end
 end
 ```

@@ -35,8 +35,25 @@ defmodule Cowrie.Transforms do
   it should not contain newlines.
 
   Available configuration:
-    - `:box_chars` - a map
-    - `:box_padding` - integer
+
+  `:box_chars` - a map with keys containing for the top(t), top-right(tr),
+  right (right), bottom-right (br), bottom (b), bottom-left (bl), left (l),
+  and top-left (tl) characters to be used when drawing the box.
+
+  Default:
+        %{
+          t: "═",
+          tr: "╗",
+          r: "║",
+          br: "╝",
+          b: "═",
+          bl: "╚",
+          l: "║",
+          tl: "╔"
+        }
+
+  `:box_padding` - integer representing the number of columns of empty space between
+  the box's left and right borders and the text, default: `1`
   """
   def box(text, opts \\ []) when is_binary(text) do
     # See https://theasciicode.com.ar/ for box-drawing codes

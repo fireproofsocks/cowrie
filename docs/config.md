@@ -7,11 +7,13 @@ There are several parts of the config:
 
 ## Pre-Transformations
 
-Pre-transformations are defined inside the `:pre_transforms` configuration option.
+Pre-transformations are functions that alter the text _before_ it is formatted. These functions are appropriate for tasks such as capitalizing words or centering the output by padding it with spaces.
 
-Most functions in `Cowrie` include a configuration key corresponding to their name inside the `:pre_configuration` map. These pre-transformations are called _before_ the corresponding formatting function is applied.
+Pre-transformations are defined inside the `:pre_transforms` configuration option; most functions in `Cowrie` accept a key inside `:pre_transforms` corresponding to their function name.
 
-The values here should either be callbacks using the [`&` capture operator](https://hexdocs.pm/elixir/Kernel.SpecialForms.html#&/1) syntax pointing to a function with an arity of 2, OR a list of such callbacks.
+These pre-transformations are called _before_ the corresponding formatting function is applied.
+
+The values here should either be callbacks using the [`&` capture operator](https://hexdocs.pm/elixir/Kernel.SpecialForms.html#&/1) syntax pointing to a function with an arity of 2 (e.g. `&Mod.fun/arity`, OR a list of such callbacks.
 
 
 ### Formatting
@@ -32,6 +34,9 @@ The raw return value is a strange-looking string: `"\e[1m\e[34mBig Blue!"`.  It 
 
 ## Post-Transformation
 
+Post-transformations are functions that alter the text _after_ it has been formatted. These functions can be used for final formatting touches such as adding an extra newline to the formatted text to give it the desired spacing.
+
+Post-transformations are defined inside the `:post_transforms` configuration option; most functions in `Cowrie` accept a key inside `:post_transforms` corresponding to their function name.
  
 ---------
 
@@ -100,3 +105,4 @@ config :cowrie,
   spinner_module: Cowrie.TimerSpinner
 ```
 
+Remember to try out `Cowrie.demo/0` to visually inspect the results of your styling. You can also use `Cowrie.colors/0` to display a list of all available color swatches.
