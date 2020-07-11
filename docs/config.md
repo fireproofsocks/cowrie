@@ -1,8 +1,14 @@
 # Configuration
 
-`Cowrie` built to be stylable. Instead of a Cascading Style Sheets (CSS), we have configuration details.
+`Cowrie` is built to be stylable. Instead of a Cascading Style Sheets (CSS), we have configuration details.
 
-There are several parts of the config:
+Most of the functions will pass their text through the following pipeline:
+
+1. A pre-transformation function
+2. A formatting prefix (where `IO.ANSI` codes are applied)
+3. A post-transformation function
+
+The configuration settings have sections corresponding to these steps.
 
 
 ## Pre-Transformations
@@ -37,6 +43,18 @@ The raw return value is a strange-looking string: `"\e[1m\e[34mBig Blue!"`.  It 
 Post-transformations are functions that alter the text _after_ it has been formatted. These functions can be used for final formatting touches such as adding an extra newline to the formatted text to give it the desired spacing.
 
 Post-transformations are defined inside the `:post_transforms` configuration option; most functions in `Cowrie` accept a key inside `:post_transforms` corresponding to their function name.
+
+## Other Settings
+
+There are a few other options that exist: mostly these exist so that `Cowrie` functions can dispatch to 
+modules that implement a specific behaviour.  For example the `:spinner_module` option must point to a 
+module that can properly draw a spinner animation.
+
+```
+config :cowrie,
+    # Must implement the `Cowrie.SpinnerBehaviour` behaviour
+    spinner_module: Cowrie.TimerSpinner
+```
  
 ---------
 

@@ -2,6 +2,10 @@ defmodule Cowrie do
   @moduledoc """
   `Cowrie` helps you print beautiful and consistent Terminal output to the Shell
   using familiar functions inspired by HTML.
+
+  The output of each function can be styled via configuration (see the page on
+  configuration) or by overriding any configured styles by passing relevant
+  options as the second argument. This is analogous to cascading style sheets (CSS).
   """
   require Logger
 
@@ -55,7 +59,7 @@ defmodule Cowrie do
     warning: @yellow,
     yes?: "",
     # The pre_transforms map can define callbacks to functions that modify the text
-    # before formatting it.
+    # BEFORE formatting it.
     pre_transforms: %{
       alert_danger: &Cowrie.Transforms.alert_danger/2,
       alert_info: &Cowrie.Transforms.alert_info/2,
@@ -66,6 +70,8 @@ defmodule Cowrie do
       ol_li: &Cowrie.Transforms.ol_li/2,
       ul_li: &Cowrie.Transforms.ul_li/2
     },
+    # The post_transforms map can define callbacks to functions that modify the text
+    # AFTER formatting it.
     post_transforms: %{
       h1: [&Cowrie.Transforms.prepend_newline/2, &Cowrie.Transforms.append_newline/2],
       h2: &Cowrie.Transforms.append_newline/2,
@@ -435,6 +441,23 @@ defmodule Cowrie do
 
   ## Examples
       iex> demo
+                                   Cowrie Formatting h1/2
+
+      Common Outputs h2/2)
+
+      This is a line of text line/2
+      This is an informational message info/2
+      This is a warning/2
+      Here comes an hr/2:
+      This is an error/2
+        ────────────────────────────────────────────────────────────────────────
+
+      Alerts h2/2
+
+      ╔════════════════════════════════╗
+      ║ ℹ️  Info:️ This is an info alert ║
+      ╚════════════════════════════════╝
+      # ... etc ...
   """
   def demo do
     h1("Cowrie Formatting h1/2")
@@ -479,6 +502,11 @@ defmodule Cowrie do
   Prints an error message to STDERR.
 
   Formatting and transforms options: `:error`
+
+  Your terminal may already provide formatting for messages sent to STDERR; be careful
+  about formatting these messages because you are more likely to have tests that assert
+  for specific error messages being logged, and adding ANSI formatting codes to the output
+  can make it a bit more difficult to verify the exact text.
   """
   def error(text, opts \\ []) when is_binary(text),
     do: transform_print(text, opts, :error, :stderr)
@@ -601,15 +629,16 @@ defmodule Cowrie do
 
   @doc """
   Displays a spinner animation which offers visual feedback appropriate for long-
-  running.  Displaying a spinner animation is most appropriate for tasks which do
-  not provide their own console messaging or when you wish to silence the task's
+  running tasks.  Displaying a spinner animation is most appropriate for tasks which
+  do not provide their own console messaging or when you wish to silence the task's
   own messaging.
 
   The callback function must be a zero-arity anonymous function.
 
-  Note: the task being executed should avoid any use of `IO.puts` and instead
-  rely on `Mix.shell().info`; all console messages logged by the callback
-  will be silenced via `Mix.Shell.Quiet`.
+  Note: the task being executed should avoid any use of `IO.puts` (or other functions
+  that write to STDOUT) and instead rely on `Mix.shell().info`; all console messages
+  logged by the callback will be silenced by temporarily setting the `Mix.Shell` to
+  `Mix.Shell.Quiet` for the duration of the executed function.
 
   ## Examples
 
