@@ -10,7 +10,7 @@ h1("This is a Heading")
 ol(["This is", "an ordered", "list via ol/2"])
 warning("Uh oh...")
 ```
-![Cowrie Demo](cowrie_demo.jpg)
+![Cowrie Demo](https://www.udrop.com/plugins/imageviewer/site/show_image.php?idt=31c70a72005f18fecf68c47d6c735ea1&f=9913)
 
 All formatting is [configurable](config.md), either via your application's configuration file, 
 or as arguments to the various functions. Sensible defaults are provided, but check out the [configuration options](config.md).

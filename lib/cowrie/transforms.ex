@@ -125,11 +125,6 @@ defmodule Cowrie.Transforms do
   end
 
   @doc """
-  The "do nothing" transform, used as a default when no text transformation desired.
-  """
-  def passthru(text, _opts), do: text
-
-  @doc """
   Prepends a newline to the text.
   """
   def prepend_newline(text, _opts), do: "\n" <> text

@@ -9,7 +9,8 @@ defmodule Cowrie do
   """
   require Logger
 
-  @default_transform &Cowrie.Transforms.passthru/2
+  # By default, these codes are added after any formatted text
+  @default_formatting_reset IO.ANSI.default_background() <> IO.ANSI.normal() <> IO.ANSI.reset()
 
   @red IO.ANSI.color(162)
   @blue IO.ANSI.color(57)
@@ -58,6 +59,10 @@ defmodule Cowrie do
     td: "",
     warning: @yellow,
     yes?: "",
+    # The post_format map can define custom formatting resets.
+    post_format: %{
+      error: ""
+    },
     # The pre_transforms map can define callbacks to functions that modify the text
     # BEFORE formatting it.
     pre_transforms: %{
@@ -557,6 +562,7 @@ defmodule Cowrie do
     |> config(:hr_char)
     |> pre_transform(opts, :hr)
     |> format(opts, :hr)
+    |> post_format(opts, :hr)
     |> post_transform(opts, :hr)
     |> out(:stdout)
   end
@@ -567,6 +573,30 @@ defmodule Cowrie do
   Formatting and transforms options: `:info`
   """
   def info(text, opts \\ []) when is_binary(text), do: transform_print(text, opts, :info)
+
+  @doc """
+  Prints a list item (unordered) to STDOUT.
+
+  This function is useful if don't have a list to pass to `ul/2`.
+
+  Formatting option: `:li`; transform options: `:ul_li`.
+  `:li_bullet` changes the character(s) used for the list bullet.
+
+  ## Examples
+      iex> li("Bullet me", li_bullet: "~>")
+      ~> Bullet me
+  """
+  def li(text, opts \\ []) when is_binary(text) do
+    # Pass our config along to the transform function
+    opts = Keyword.put(opts, :li_bullet, config(opts, :li_bullet))
+
+    text
+    |> pre_transform(opts, :ul_li)
+    |> format(opts, :li)
+    |> post_format(opts, :li)
+    |> post_transform(opts, :ul_li)
+    |> out(:stdout)
+  end
 
   @doc """
   Prints a line of "unformatted" text to STDOUT.
@@ -599,6 +629,7 @@ defmodule Cowrie do
       li
       |> pre_transform(opts, :ol_li)
       |> format(opts, :li)
+      |> post_format(opts, :li)
       |> post_transform(opts, :ol_li)
       |> out(:stdout)
     end)
@@ -704,6 +735,7 @@ defmodule Cowrie do
         th
         |> pre_transform(opts, :th)
         |> format(opts, :th)
+        |> post_format(opts, :th)
       end)
 
     rows
@@ -713,6 +745,7 @@ defmodule Cowrie do
         td
         |> pre_transform(opts, :td)
         |> format(opts, :td)
+        |> post_format(opts, :td)
       end)
     end)
     |> TableRex.quick_render!(headers)
@@ -749,6 +782,8 @@ defmodule Cowrie do
         li
         |> pre_transform(opts, :ul_li)
         |> format(opts, :li)
+        |> post_format(opts, :li)
+        |> post_transform(opts, :ul_li)
         |> out(:stdout)
       end
     )
@@ -770,14 +805,14 @@ defmodule Cowrie do
   ################################################
   defp color_swatch_text(index, nil) do
     IO.ANSI.color(index) <>
-      "████████████████████ Sample Text #{reset()} IO.ANSI.color(#{index}) -- no RBB alternative --"
+      "████████████████████ Sample Text #{@default_formatting_reset} IO.ANSI.color(#{index}) -- no RBB alternative --"
   end
 
   defp color_swatch_text(index, {r, g, b}) do
     IO.ANSI.color(index) <>
-      "████████████████████ Sample Text #{reset()} IO.ANSI.color(#{index}) or IO.ANSI.color(#{r}, #{
-        g
-      }, #{b})"
+      "████████████████████ Sample Text #{@default_formatting_reset} IO.ANSI.color(#{index}) or IO.ANSI.color(#{
+        r
+      }, #{g}, #{b})"
   end
 
   # Read from config, defer to opts
@@ -791,18 +826,32 @@ defmodule Cowrie do
 
   # Applies any configured ANSI formatting to text with formatting reset
   defp format(text, opts, key) do
-    "#{config(opts, key)}#{text}#{reset()}"
+    "#{config(opts, key)}#{text}"
+  end
+
+  # Applies any configured ANSI formatting reset. This is important so we don't
+  # end up with ANSI codes polluting our messages (even if they are only reset codes).
+  defp post_format(text, opts, key) do
+    reset =
+      opts
+      |> config(:post_format, %{})
+      |> Map.get(key, @default_formatting_reset)
+
+    "#{text}#{reset}"
   end
 
   # Applies the transformation(s) to the text
   defp pre_transform(text, opts, key) do
     opts
     |> config(:pre_transforms)
-    |> Map.get(key, @default_transform)
+    |> Map.get(key, nil)
     |> List.wrap()
     |> Enum.reduce(text, fn
       callback, x when is_function(callback) ->
         apply(callback, [x, opts])
+
+      nil, x ->
+        x
 
       _, x ->
         Logger.error("Pre-transform for key #{key} must be a function.")
@@ -813,11 +862,14 @@ defmodule Cowrie do
   defp post_transform(text, opts, key) do
     opts
     |> config(:post_transforms)
-    |> Map.get(key, @default_transform)
+    |> Map.get(key, nil)
     |> List.wrap()
     |> Enum.reduce(text, fn
       callback, x when is_function(callback) ->
         apply(callback, [x, opts])
+
+      nil, x ->
+        x
 
       _, x ->
         Logger.error("Post-transform for key #{key} must be a function.")
@@ -825,15 +877,12 @@ defmodule Cowrie do
     end)
   end
 
-  # Resets any applied ANSI formatting so the next line starts fresh.
-  defp reset, do: IO.ANSI.default_background() <> IO.ANSI.normal() <> IO.ANSI.reset()
-
   # The base functions to route to STDOUT, STDERR, and some other Mix.Shell callbacks
-  defp out(text, :stdout), do: Mix.shell().info("#{text}#{reset()}")
-  defp out(text, :stderr), do: Mix.shell().error("#{text}#{reset()}")
-  defp out(text, :prompt), do: Mix.shell().prompt("#{text}#{reset()}")
-  defp out(text, :yes?), do: Mix.shell().yes?("#{text}#{reset()}")
-  defp out(text, :secret), do: IO.write("#{text}#{reset()}")
+  defp out(text, :stdout), do: Mix.shell().info("#{text}")
+  defp out(text, :stderr), do: Mix.shell().error("#{text}")
+  defp out(text, :prompt), do: Mix.shell().prompt("#{text}")
+  defp out(text, :yes?), do: Mix.shell().yes?("#{text}")
+  defp out(text, :secret), do: IO.write("#{text}")
 
   # Applies a transformation, applies formatting, then prints to STDOUT
   # Most functions will use the same key for formatting and transformations.
@@ -841,6 +890,7 @@ defmodule Cowrie do
     text
     |> pre_transform(opts, key)
     |> format(opts, key)
+    |> post_format(opts, key)
     |> post_transform(opts, key)
     |> out(stream)
   end
