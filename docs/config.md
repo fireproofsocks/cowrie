@@ -4,9 +4,10 @@
 
 Most of the functions will pass their text through the following pipeline:
 
-1. A pre-transformation function
-2. A formatting prefix (where `IO.ANSI` codes are applied)
-3. A post-transformation function
+1. Pre-transformation (where one or more functions modifies the input text)
+2. Formatting (where `IO.ANSI` codes are applied as a prefix to the input text)
+3. Post-format (where `IO.ANSI` reset codes are applied as a suffix to the input text) 
+4. Post-transformation (where one or more functions modifies the formatted text)
 
 The configuration settings have sections corresponding to these steps.
 
@@ -37,6 +38,15 @@ Big Blue!
 ```
 
 The raw return value is a strange-looking string: `"\e[1m\e[34mBig Blue!"`.  It isn't until you pass that to your `Mix.Shell` that you will actually see the result of this formatting.
+
+## Post-Format
+
+If no key is defined inside the `post_format` map, the following ANSI reset codes will be appended to the formatted text:
+```
+IO.ANSI.default_background() <> IO.ANSI.normal() <> IO.ANSI.reset()
+```
+
+Even though the reset codes are not normally visible, there are times when you may not wish them to precisely symmetrical or not there at all.  One case is for error messages (which you may have tests that assert for). Also, error messages should receive some default coloring from Elixir already.  For this reason, the formatting and `post_format` options for the `error/2` are disabled: the post_format option is set to `""`.  Otherwise all error messages would include the ANSI reset `"\e[49m\e[22m\e[0m"` appended to them, and that could easily make testing a nightmare. Consider disabling ANSI entirely for your test environment.
 
 ## Post-Transformation
 
@@ -102,6 +112,10 @@ config :cowrie,
   td: "",
   warning: IO.ANSI.red(),
   yes?: "",
+  # The post_format map can define custom formatting resets.
+    post_format: %{
+      error: ""
+    },
   # The pre_transforms map can define callbacks to functions that modify the text
   # before formatting it.
   pre_transforms: %{
