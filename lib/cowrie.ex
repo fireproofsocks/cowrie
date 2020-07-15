@@ -664,7 +664,8 @@ defmodule Cowrie do
   do not provide their own console messaging or when you wish to silence the task's
   own messaging.
 
-  The callback function must be a zero-arity anonymous function.
+  The callback function must be a zero-arity anonymous function. The return value
+  of the spinner function will the return value of this function.
 
   Note: the task being executed should avoid any use of `IO.puts` (or other functions
   that write to STDOUT) and instead rely on `Mix.shell().info`; all console messages
@@ -684,6 +685,14 @@ defmodule Cowrie do
   As used in the demo:
 
       iex> spinner(fn -> Process.sleep(:timer.seconds(5)) end)
+
+  Demonstrating a return value:
+
+      iex> spinner(fn ->
+      ...>   Process.sleep(:timer.seconds(5))
+      ...>   {:ok, "Task complete!"}
+      ...> end)
+      {:ok, "Task complete!"}
   """
   def spinner(callback, opts \\ []) when is_function(callback) do
     spinner_module = config(opts, :spinner_module)
@@ -695,12 +704,14 @@ defmodule Cowrie do
       Task.async(fn ->
         shell = Mix.shell()
         Mix.shell(Mix.Shell.Quiet)
-        callback.()
+        returned_value = callback.()
         Mix.shell(shell)
+        returned_value
       end)
 
-    Task.await(task, timeout)
+    returned_value = Task.await(task, timeout)
     Process.exit(pid, :kill)
+    returned_value
   end
 
   @doc """
