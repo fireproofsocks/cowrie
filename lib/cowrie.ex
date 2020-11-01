@@ -702,6 +702,7 @@ defmodule Cowrie do
 
     task =
       Task.async(fn ->
+        Application.ensure_all_started(:gettext)
         shell = Mix.shell()
         Mix.shell(Mix.Shell.Quiet)
         returned_value = callback.()
@@ -711,6 +712,8 @@ defmodule Cowrie do
 
     returned_value = Task.await(task, timeout)
     Process.exit(pid, :kill)
+    # Add a new line b/c the spinner itself cannot
+    Mix.shell().info("")
     returned_value
   end
 
