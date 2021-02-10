@@ -508,10 +508,10 @@ defmodule Cowrie do
 
   Formatting and transforms options: `:error`
 
-  Your terminal may already provide formatting for messages sent to STDERR; be careful
-  about formatting these messages because you are more likely to have tests that assert
-  for specific error messages being logged, and adding ANSI formatting codes to the output
-  can make it a bit more difficult to verify the exact text.
+  Your terminal may already provide formatting for messages sent to STDERR, so
+  the default behavior adds no special formatting.  If you have tests that assert
+  for specific error messages, adding ANSI formatting codes to the output
+  may make it a bit more difficult to verify the exact text.
   """
   def error(text, opts \\ []) when is_binary(text),
     do: transform_print(text, opts, :error, :stderr)
@@ -812,8 +812,16 @@ defmodule Cowrie do
 
   @doc """
   Prompts the user to continue with a simple `Yes` or `No`.
+
+  ## Examples
+
+  `yes?/2` returns a boolean, so it is useful in a conditional, e.g.
+
+      if yes?("Are you sure?") do
+        # Do something
+      end
   """
-  @spec yes?(text :: binary, opts :: keyword) :: binary
+  @spec yes?(text :: binary, opts :: keyword) :: boolean()
   def yes?(text, opts \\ []) when is_binary(text), do: transform_print(text, opts, :yes?, :yes?)
 
   ################################################
