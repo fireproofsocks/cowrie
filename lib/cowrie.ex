@@ -693,6 +693,15 @@ defmodule Cowrie do
       ...>   {:ok, "Task complete!"}
       ...> end)
       {:ok, "Task complete!"}
+
+  Specifying a custom spinner module:
+
+      iex> spinner(fn ->
+      ...>   Process.sleep(:timer.seconds(5))
+      ...>   {:ok, "Task complete!"}
+      ...> end, spinner_module: Tacocat.Cat)
+      {:ok, "Task complete!"}
+
   """
   def spinner(callback, opts \\ []) when is_function(callback) do
     spinner_module = config(opts, :spinner_module)
