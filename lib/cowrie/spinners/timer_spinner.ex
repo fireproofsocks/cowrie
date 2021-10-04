@@ -2,6 +2,9 @@ defmodule Cowrie.TimerSpinner do
   @moduledoc """
   This module implements an animation (a spinner) which includes an HH:MM:SS
   timer to show elapsed time.
+
+  Warning: this spinner does not display properly when the screen becomes too
+  narrow!
   """
 
   import Cowrie.Gettext
