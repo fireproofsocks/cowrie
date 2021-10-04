@@ -1,5 +1,12 @@
 # Cowrie
 
+
+[![Module Version](https://img.shields.io/hexpm/v/cowrie.svg)](https://hex.pm/packages/cowrie)
+[![Hex Docs](https://img.shields.io/badge/hex-docs-lightgreen.svg)](https://hexdocs.pm/cowrie/)
+[![Total Download](https://img.shields.io/hexpm/dt/cowrie.svg)](https://hex.pm/packages/cowrie)
+[![License](https://img.shields.io/hexpm/l/cowrie.svg)](https://hex.pm/packages/cowrie)
+[![Last Updated](https://img.shields.io/github/last-commit/fireproofsocks/cowrie.svg)](https://github.com/fireproofsocks/cowrie/commits/master)
+
 `Cowrie` helps you print beautiful and consistent Terminal output to the Shell
 of your Elixir apps using functions inspired by familiar HTML tags, e.g.
 
@@ -17,7 +24,6 @@ Try running the `Cowire/demo/0` function to inspect the styling of all the outpu
 
 All formatting styles rely on `IO.ANSI` formatting options, so you are free to
 research and apply your own styles to match your personal preference.
-
 
 ## Installation
 
