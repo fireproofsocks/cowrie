@@ -642,7 +642,8 @@ defmodule Cowrie do
   Formatting and transforms options: `:prompt`
   """
   @spec prompt(text :: binary, opts :: keyword) :: binary
-  def prompt(text, opts \\ []) when is_binary(text), do: transform_print(text, opts, :h1, :prompt)
+  def prompt(text, opts \\ []) when is_binary(text),
+    do: transform_print(text, opts, :prompt, :prompt)
 
   @doc """
   The user's input will not be visible to them as they type in the console.
