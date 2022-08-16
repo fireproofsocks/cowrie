@@ -823,7 +823,7 @@ defmodule Cowrie do
   @doc """
   Prompts the user to continue with a simple `Yes` or `No`.
   """
-  @spec yes?(text :: binary, opts :: keyword) :: binary
+  @spec yes?(text :: binary, opts :: keyword) :: boolean()
   def yes?(text, opts \\ []) when is_binary(text), do: transform_print(text, opts, :yes?, :yes?)
 
   ################################################
@@ -834,9 +834,7 @@ defmodule Cowrie do
 
   defp color_swatch_text(index, {r, g, b}) do
     IO.ANSI.color(index) <>
-      "████████████████████ Sample Text #{@default_formatting_reset} IO.ANSI.color(#{index}) or IO.ANSI.color(#{
-        r
-      }, #{g}, #{b})"
+      "████████████████████ Sample Text #{@default_formatting_reset} IO.ANSI.color(#{index}) or IO.ANSI.color(#{r}, #{g}, #{b})"
   end
 
   # Read from config, defer to opts
