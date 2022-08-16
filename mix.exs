@@ -1,10 +1,11 @@
 defmodule Cowrie.MixProject do
   use Mix.Project
 
-  @version "0.3.1"
+  @version "0.3.2"
 
   def project do
     [
+      aliases: aliases(),
       app: :cowrie,
       description: "Simple stylable formatting for your CLI, Terminal, or Shell output",
       package: package(),
@@ -12,14 +13,15 @@ defmodule Cowrie.MixProject do
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      dialyzer: [
+        plt_add_apps: [:mix]
+      ],
       docs: [
         source_ref: "v#{@version}",
         main: "overview",
         logo: "docs/logo.png",
         extras: extras()
-      ],
-      compilers: [:gettext] ++ Mix.compilers(),
-      aliases: aliases()
+      ]
     ]
   end
 
@@ -49,6 +51,7 @@ defmodule Cowrie.MixProject do
   defp deps do
     [
       {:credo, "~> 1.3", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.2.0", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.22", only: [:dev, :test], runtime: false},
       {:gettext, ">= 0.0.0"},
       {:table_rex, "~> 3.0"}
