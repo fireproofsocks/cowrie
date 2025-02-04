@@ -6,8 +6,7 @@ defmodule Cowrie.TimerSpinner do
   Warning: this spinner does not display properly when the screen becomes too
   narrow!
   """
-
-  import Cowrie.Gettext
+  use Gettext, backend: Cowrie.Gettext
 
   @behaviour Cowrie.SpinnerBehaviour
 

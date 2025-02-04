@@ -1,4 +1,4 @@
 defmodule Cowrie.Gettext do
   @moduledoc false
-  use Gettext, otp_app: :cowrie
+  use Gettext.Backend, otp_app: :cowrie
 end

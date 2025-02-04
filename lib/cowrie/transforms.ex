@@ -3,7 +3,7 @@ defmodule Cowrie.Transforms do
   Defines functions that _transform_ (a.k.a. mutate) text. These functions do
   not print the text and they do not apply ANSI formatting.
   """
-  import Cowrie.Gettext
+  use Gettext, backend: Cowrie.Gettext
 
   @doc """
   Prepends a Danger emoji to the given text.

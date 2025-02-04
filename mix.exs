@@ -1,7 +1,7 @@
 defmodule Cowrie.MixProject do
   use Mix.Project
 
-  @version "0.3.2"
+  @version "0.4.0"
 
   def project do
     [
@@ -50,11 +50,11 @@ defmodule Cowrie.MixProject do
 
   defp deps do
     [
-      {:credo, "~> 1.3", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.2.0", only: [:dev], runtime: false},
-      {:ex_doc, "~> 0.22", only: [:dev, :test], runtime: false},
-      {:gettext, ">= 0.0.0"},
-      {:table_rex, "~> 3.0"}
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.4.5", only: [:dev], runtime: false},
+      {:ex_doc, "~> 0.36", only: [:dev, :test], runtime: false},
+      {:gettext, "~> 0.26.2"},
+      {:table_rex, "~> 4.0"}
     ]
   end
 
