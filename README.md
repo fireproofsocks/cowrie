@@ -1,6 +1,5 @@
 # Cowrie
 
-
 [![Module Version](https://img.shields.io/hexpm/v/cowrie.svg)](https://hex.pm/packages/cowrie)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-lightgreen.svg)](https://hexdocs.pm/cowrie/)
 [![Total Download](https://img.shields.io/hexpm/dt/cowrie.svg)](https://hex.pm/packages/cowrie)
@@ -18,8 +17,8 @@ ol(["This is", "an ordered", "list via ol/2"])
 warning("Uh oh...")
 ```
 
-All formatting is configurable, either via your application's configuration file, 
-or as arguments to the various functions. Sensible defaults are provided. 
+All formatting is configurable, either via your application's configuration file,
+or as arguments to the various functions. Sensible defaults are provided.
 Try running the `Cowire/demo/0` function to inspect the styling of all the output.
 
 All formatting styles rely on `IO.ANSI` formatting options, so you are free to
@@ -33,7 +32,7 @@ by adding `cowrie` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:cowrie, "~> 0.1.0"}
+    {:cowrie, "~> 0.5.0"}
   ]
 end
 ```

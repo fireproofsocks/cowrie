@@ -1,7 +1,7 @@
 defmodule Cowrie.MixProject do
   use Mix.Project
 
-  @version "0.4.0"
+  @version "0.5.0"
 
   def project do
     [
@@ -29,7 +29,10 @@ defmodule Cowrie.MixProject do
     [
       maintainers: ["Everett Griffiths"],
       licenses: ["MIT"],
-      links: %{github: "https://github.com/fireproofsocks/cowrie"}
+      links: %{
+        "GitHub" => "https://github.com/fireproofsocks/cowrie",
+        "Sponsor" => "https://github.com/sponsors/fireproofsocks"
+      }
     ]
   end
 
@@ -52,9 +55,9 @@ defmodule Cowrie.MixProject do
     [
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4.5", only: [:dev], runtime: false},
-      {:ex_doc, "~> 0.36", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.37", only: [:dev, :test], runtime: false},
       {:gettext, "~> 0.26.2"},
-      {:table_rex, "~> 4.0"}
+      {:table_rex, "~> 4.1"}
     ]
   end
 
